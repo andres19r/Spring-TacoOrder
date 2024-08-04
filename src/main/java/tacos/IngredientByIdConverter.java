@@ -1,7 +1,9 @@
 package tacos;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import tacos.data.IngredientRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +11,13 @@ import java.util.Map;
 @Component
 public class IngredientByIdConverter implements Converter<String, Ingredient> {
     private Map<String, Ingredient> ingredientMap = new HashMap<>();
+
+    private IngredientRepository ingredientRepo;
+
+    @Autowired
+    public IngredientByIdConverter(IngredientRepository ingredientRepo) {
+        this.ingredientRepo = ingredientRepo;
+    }
 
     public IngredientByIdConverter() {
         ingredientMap.put("FLTO",
@@ -35,7 +44,7 @@ public class IngredientByIdConverter implements Converter<String, Ingredient> {
 
     @Override
     public Ingredient convert(String id) {
-        return ingredientMap.get(id);
+        return this.ingredientRepo.findById(id).orElse(null);
     }
 
 }
